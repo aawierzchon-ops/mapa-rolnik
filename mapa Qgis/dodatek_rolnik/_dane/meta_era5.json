@@ -1,0 +1,55 @@
+{
+ "zrodlo": "era5",
+ "warstwy": [
+  {
+   "id": "t_gleby_era5",
+   "plik": "t_gleby_era5.png",
+   "nazwa": "Temperatura gleby 0–7 cm (ERA5-Land)",
+   "jednostka": "°C",
+   "min": -10,
+   "max": 30,
+   "paleta": "temperatura",
+   "grupa": "ERA5-Land",
+   "opis": "Średnia dobowa z ostatnich 3 dostępnych dni.",
+   "data": "ERA5-Land (Copernicus) przez Open-Meteo, średnia 3 dni do 2026-11-15",
+   "ukryta": false,
+   "kategorie": null,
+   "miejsca": 1,
+   "pokrycie": 0.9519
+  },
+  {
+   "id": "wilg_gleby_era5",
+   "plik": "wilg_gleby_era5.png",
+   "nazwa": "Wilgotność gleby 0–7 cm (ERA5-Land)",
+   "jednostka": "m³/m³",
+   "min": 0.05,
+   "max": 0.5,
+   "paleta": "wilgotnosc",
+   "grupa": "ERA5-Land",
+   "opis": "Objętościowa zawartość wody w wierzchniej warstwie gleby.",
+   "data": "ERA5-Land (Copernicus) przez Open-Meteo, średnia 3 dni do 2026-11-15",
+   "ukryta": false,
+   "kategorie": null,
+   "miejsca": 2,
+   "pokrycie": 0.9519
+  },
+  {
+   "id": "opady_7d_era5",
+   "plik": "opady_7d_era5.png",
+   "nazwa": "Opady – suma 7 dni (ERA5)",
+   "jednostka": "mm",
+   "min": 0,
+   "max": 60,
+   "paleta": "opady",
+   "grupa": "ERA5-Land",
+   "opis": "",
+   "data": "ERA5, 2026-11-10 – 2026-11-16",
+   "ukryta": false,
+   "kategorie": null,
+   "miejsca": 1,
+   "pokrycie": 1.0
+  }
+ ],
+ "opis": "ERA5-Land (Copernicus) przez Open-Meteo, średnia 3 dni do 2026-11-15",
+ "ostatni_dzien": "2026-11-15"
+}
