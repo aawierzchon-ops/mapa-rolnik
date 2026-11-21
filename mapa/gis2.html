@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="./resources/ol.css">
+        <link rel="stylesheet" href="resources/fontawesome-all.min.css">
+        <link href="resources/photon-geocoder-autocomplete.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="./resources/ol-layerswitcher.css">
+        <link rel="stylesheet" href="./resources/qgis2web.css">
+        <style>
+        html, body {
+            background-color: #ffffff;
+        }
+        .ol-control > * {
+            background-color: #f8f8f8!important;
+            color: #444444!important;
+            border-radius: 0px;
+        }
+        .ol-attribution a, .gcd-gl-input::placeholder, .search-layer-input-search::placeholder {
+            color: #444444!important;
+        }
+        .search-layer-input-search {
+            background-color: #f8f8f8!important;
+        }
+        .ol-control > *:focus, .ol-control >*:hover {
+            background-color: rgba(248, 248, 248, 0.7)!important;
+        } 
+        .ol-control {
+            background-color: rgba(255,255,255,.4) !important;
+            padding: 2px !important;
+        } 
+
+        /* Karta popupu dla siatki heksagonalnej — wygląd zgodny z gis1 */
+        .ol-popup {
+            background: transparent !important;
+            border: 0 !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+        }
+        .ol-popup:after, .ol-popup:before { display: none !important; }
+        .gis1-popup {
+            min-width: 245px;
+            max-width: 310px;
+            padding: 16px 18px;
+            border-radius: 12px;
+            background: #fff;
+            color: #263238;
+            box-shadow: 0 5px 22px rgba(0,0,0,.22);
+            font: 14px/1.45 Arial, sans-serif;
+        }
+        .gis1-popup h3 {
+            margin: 0 26px 12px 0;
+            font-size: 17px;
+            line-height: 1.25;
+            color: #263238;
+        }
+        .gis1-popup .indicator { margin-bottom: 7px; }
+        .gis1-popup .indicator strong {
+            color: #2e7d32;
+            font-size: 23px;
+        }
+        .gis1-popup .progress-bar-bg {
+            height: 10px;
+            overflow: hidden;
+            margin: 7px 0 13px;
+            border-radius: 8px;
+            background: #e8ecef;
+        }
+        .gis1-popup .progress-bar-fill {
+            height: 100%;
+            border-radius: 8px;
+            background: linear-gradient(90deg,#d7191c 0%,#fdae61 25%,#ffffbf 50%,#abdda4 75%,#75ba2b 100%);
+        }
+        .gis1-popup .poi-sum { margin: 0 0 12px; }
+        .gis1-popup .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .gis1-popup .tag {
+            padding: 4px 9px;
+            border: 1px solid #d7dde0;
+            border-radius: 14px;
+            background: #f2f4f5;
+            color: #778187;
+            font-size: 12px;
+        }
+        .gis1-popup .tag.active {
+            border-color: #b7d9b9;
+            background: #e4f3e5;
+            color: #267332;
+            font-weight: 600;
+        }
+        .gis1-popup-close {
+            position: absolute;
+            top: 7px;
+            right: 10px;
+            border: 0;
+            background: transparent;
+            color: #667;
+            font-size: 22px;
+            line-height: 1;
+            cursor: pointer;
+        }
+
+        </style>
+
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title></title>
+    </head>
+    <body>
+        <div id="map">
+            <div id="popup" class="ol-popup">
+                <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+                <div id="popup-content"></div>
+            </div>
+        </div>
+        <script src="resources/qgis2web_expressions.js"></script>
+        <script src="./resources/functions.js"></script>
+        <script src="./resources/ol.js"></script>
+        <script src="./resources/ol-layerswitcher.js"></script>
+        <script src="resources/photon-geocoder-autocomplete.min.js"></script>
+        <script src="resources/olms.js"></script>
+        <script src="layers/analiza_15m_siatka_heksagonalna_1.js"></script><script src="layers/Suwaki_boundry_2.js"></script><script src="layers/Suwaki_transport_3.js"></script><script src="layers/zdrowie_Suwaki_4.js"></script><script src="layers/Suwaki_lasy_i_rekreacja_5.js"></script><script src="layers/Suwaki_handel_i_usgui_6.js"></script><script src="layers/Suwaki_edukacja_7.js"></script>
+        <script src="styles/analiza_15m_siatka_heksagonalna_1_style.js"></script><script src="styles/Suwaki_boundry_2_style.js"></script><script src="styles/Suwaki_transport_3_style.js"></script><script src="styles/zdrowie_Suwaki_4_style.js"></script><script src="styles/Suwaki_lasy_i_rekreacja_5_style.js"></script><script src="styles/Suwaki_handel_i_usgui_6_style.js"></script><script src="styles/Suwaki_edukacja_7_style.js"></script>
+        <script src="./layers/layers.js" type="text/javascript"></script> 
+        <script src="./resources/Autolinker.min.js"></script>
+        <script src="./resources/qgis2web.js"></script>        
+
+        <script>
+        // Niestandardowy popup komórki siatki — odwzorowuje kartę z gis1.
+        (function () {
+            function initGis1StylePopup() {
+                if (typeof map === 'undefined' || !window.ol) return;
+
+                var popupEl = document.createElement('div');
+                popupEl.className = 'gis1-popup';
+                popupEl.style.display = 'none';
+                var popupOverlay = new ol.Overlay({
+                    element: popupEl,
+                    positioning: 'bottom-center',
+                    offset: [0, -12],
+                    stopEvent: true
+                });
+                map.addOverlay(popupOverlay);
+
+                function truthyAny(props, keys, fallback) {
+                    for (var i = 0; i < keys.length; i++) {
+                        var v = props[keys[i]];
+                        if (v !== undefined && v !== null && v !== false && v !== '' && v !== 0) return true;
+                    }
+                    return !!fallback;
+                }
+                function esc(value) {
+                    return String(value).replace(/[&<>"']/g, function (c) {
+                        return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]);
+                    });
+                }
+
+                map.on('singleclick', function (evt) {
+                    var selected = null;
+                    map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
+                        var layerName = (layer && layer.get && layer.get('name')) || '';
+                        var props = feature.getProperties ? feature.getProperties() : {};
+                        // Szukamy poligonu warstwy siatki; nie przechwytujemy punktów POI ani granicy.
+                        var geom = feature.getGeometry && feature.getGeometry();
+                        var geomType = geom && geom.getType ? geom.getType() : '';
+                        var hasIndex = props.index_15m !== undefined || props['index_15m'] !== undefined;
+                        if (hasIndex && (geomType === 'Polygon' || geomType === 'MultiPolygon')) {
+                            selected = props;
+                            return feature;
+                        }
+                    });
+
+                    // Ukryj standardowy popup qgis2web, aby nie dublował karty.
+                    var standardPopup = document.getElementById('popup');
+                    if (standardPopup) standardPopup.style.display = 'none';
+
+                    if (!selected) {
+                        popupEl.style.display = 'none';
+                        popupOverlay.setPosition(undefined);
+                        return;
+                    }
+
+                    var raw = parseFloat(selected.index_15m);
+                    if (!isFinite(raw)) raw = 0;
+                    var value = raw.toFixed(1);
+                    var poi = selected.poi_count !== undefined && selected.poi_count !== null
+                        ? selected.poi_count : Math.round(raw * 0.55);
+
+                    var health = truthyAny(selected, ['zdrowie','health','zdrowie_1'], raw > 20 && selected.zdrowie !== false);
+                    var education = truthyAny(selected, ['edukacja','education','eduk_1'], raw > 40 && selected.edukacja !== false);
+                    var trade = truthyAny(selected, ['handel','shop','handel_1'], raw > 60 && selected.handel !== false);
+                    var green = truthyAny(selected, ['zielen','green','rekreacja'], raw > 10 && selected.zielen !== false);
+                    var transport = truthyAny(selected, ['transport','transit','komunikacja'], raw > 10 && selected.transport !== false);
+                    var width = Math.min(Math.max(raw, 0), 100);
+
+                    popupEl.innerHTML =
+                        '<button type="button" class="gis1-popup-close" aria-label="Zamknij">&times;</button>' +
+                        '<h3>Dostępność 15-Minutowa</h3>' +
+                        '<div class="indicator">Wskaźnik: <strong>' + esc(value) + '%</strong></div>' +
+                        '<div class="progress-bar-bg"><div class="progress-bar-fill" style="width:' + width + '%"></div></div>' +
+                        '<div class="poi-sum">Suma punktów POI w komórce: <strong>' + esc(poi) + '</strong></div>' +
+                        '<div class="tags-container">' +
+                        '<span class="tag ' + (health ? 'active' : '') + '">Zdrowie</span>' +
+                        '<span class="tag ' + (education ? 'active' : '') + '">Edukacja</span>' +
+                        '<span class="tag ' + (trade ? 'active' : '') + '">Handel</span>' +
+                        '<span class="tag ' + (green ? 'active' : '') + '">Zieleń</span>' +
+                        '<span class="tag ' + (transport ? 'active' : '') + '">Transport</span>' +
+                        '</div>';
+                    popupEl.style.display = 'block';
+                    popupEl.querySelector('.gis1-popup-close').addEventListener('click', function () {
+                        popupEl.style.display = 'none';
+                        popupOverlay.setPosition(undefined);
+                    });
+                    popupOverlay.setPosition(evt.coordinate);
+                });
+            }
+
+            if (document.readyState === 'complete') initGis1StylePopup();
+            else window.addEventListener('load', initGis1StylePopup);
+        })();
+        </script>
+
+    </body>
+</html>
